@@ -1,0 +1,171 @@
+name: Release Python 🐍 distribution 📦 to PyPI and TestPyPI
+
+on: push
+
+jobs:
+  build:
+    name: Build & verify package
+    runs-on: ubuntu-latest
+    permissions:
+      attestations: write
+      id-token: write
+    outputs:
+      python-versions: ${{ steps.baipp.outputs.supported_python_classifiers_json_array }}
+      release-version: ${{ steps.cz.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: hynek/build-and-inspect-python-package@v2
+        id: baipp
+        with:
+          attest-build-provenance-github: "true"
+
+  tests:
+    name: Run Tests on Python ${{ matrix.python-version }}
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ${{ fromJson(needs.build.outputs.python-versions) }}
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download pre-built packages
+        uses: actions/download-artifact@v4
+        with:
+          name: Packages
+          path: dist
+      - run: tar xf dist/*.tar.gz --strip-components=1
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          allow-prereleases: true
+      - uses: hynek/setup-cached-uv@v2
+      - run: uv pip install --system tox-gh tox-uv
+      - run: python -Im tox run --installpkg dist/*.whl
+      - name: Upload coverage data
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-data-${{ matrix.python-version }}
+          path: .coverage.*
+          if-no-files-found: ignore
+
+  coverage:
+    name: Combine & check coverage
+    needs: tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: .python-version-default
+      - uses: hynek/setup-cached-uv@v2
+      - run: uv pip install --system --upgrade coverage[toml]
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: coverage-data-*
+          merge-multiple: true
+      - name: Combine coverage & fail if it's <75%
+        run: |
+          python -Im coverage combine
+          python -Im coverage html --skip-covered --skip-empty
+          python -Im coverage report --format=markdown >> $GITHUB_STEP_SUMMARY
+          python -Im coverage report --fail-under=75
+      - name: Upload HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-report
+          path: htmlcov
+
+  publish-to-pypi:
+    name: >-
+      Publish Python 🐍 distribution 📦 to PyPI
+    if: startsWith(github.ref, 'refs/tags/')
+    needs:
+      - build
+      - tests
+    runs-on: ubuntu-latest
+    environment:
+      name: Production
+      url: https://pypi.org/p/directed-inputs-class
+    permissions:
+      id-token: write
+
+    steps:
+      - name: Download pre-built packages
+        uses: actions/download-artifact@v4
+        with:
+          name: Packages
+          path: dist
+      - name: Publish distribution 📦 to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+
+  github-release:
+    name: >-
+      Sign the Python 🐍 distribution 📦 with Sigstore
+      and upload them to GitHub Release
+    needs:
+      - publish-to-pypi
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - name: Download pre-built packages
+        uses: actions/download-artifact@v4
+        with:
+          name: Packages
+          path: dist
+      - run: tar xf dist/*.tar.gz --strip-components=1
+      - name: Sign the dists with Sigstore
+        uses: sigstore/gh-action-sigstore-python@v2.1.1
+        with:
+          inputs: >-
+            ./dist/*.tar.gz
+            ./dist/*.whl
+      - name: Create GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: >-
+          gh release create
+          '${{ github.ref_name }}'
+          --repo '${{ github.repository }}'
+          --notes ""
+      - name: Upload artifact signatures to GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: >-
+          gh release upload
+          '${{ github.ref_name }}' dist/**
+          --repo '${{ github.repository }}'
+
+  publish-to-testpypi:
+    name: Publish Python 🐍 distribution 📦 to TestPyPI
+    needs:
+      - build
+      - tests
+    runs-on: ubuntu-latest
+
+    environment:
+      name: Testing
+      url: https://test.pypi.org/p/directed-inputs-class
+
+    permissions:
+      id-token: write
+
+    steps:
+      - name: Download pre-built packages
+        uses: actions/download-artifact@v4
+        with:
+          name: Packages
+          path: dist
+      - name: Publish distribution 📦 to TestPyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/

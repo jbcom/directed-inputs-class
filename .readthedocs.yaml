@@ -1,0 +1,19 @@
+version: 2
+
+build:
+  os: ubuntu-lts-latest
+  tools:
+    python: "3.12"
+  jobs:
+    post_checkout:
+      - git fetch --tags
+    pre_build:
+      - python -Im pip install tox-uv
+      - python -Im tox run -e docs
+
+python:
+  install:
+    - method: pip
+      path: .
+      extra_requirements:
+        - docs
