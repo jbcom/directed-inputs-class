@@ -1,0 +1,34 @@
+Changelog
+==========
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/).
+
+<!-- changelog follows -->
+
+{% set repo_url = "https://github.com/jbcom/extended-data-types" %}
+{% set previous_tag = None %}
+
+{% for release in tree %}
+## [{{ release.version }}]({{ repo_url }}/{{ "tree" if not previous_tag else "compare" }}/{{ release.version if not previous_tag else previous_tag + "..." + release.version }}) - {{ release.date }}
+
+{% for change_type, changes in release.changes.items() %}
+### {{ change_type }}
+
+{% for change in changes %}
+- {{ change.message }}
+  {% if change.scope %}
+    - **Scope**: {{ change.scope }}
+  {% endif %}
+  {% if change.breaking %}
+    - **Breaking Change**: {{ change.breaking }}
+  {% endif %}
+  {% if change.body %}
+    {{ change.body | indent(4) }}
+  {% endif %}
+{% endfor %}
+{% endfor %}
+
+{% set previous_tag = release.version %}
+{% endfor %}

@@ -1,0 +1,39 @@
+:py:mod:`directed_inputs_class`
+===============================
+
+.. py:module:: directed_inputs_class
+
+.. autodoc2-docstring:: directed_inputs_class
+   :allowtitles:
+
+Submodules
+----------
+
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   directed_inputs_class.__main__
+
+Package Contents
+----------------
+
+Data
+~~~~
+
+.. list-table::
+   :class: autosummary longtable
+   :align: left
+
+   * - :py:obj:`__version__ <directed_inputs_class.__version__>`
+     - .. autodoc2-docstring:: directed_inputs_class.__version__
+          :summary:
+
+API
+~~~
+
+.. py:data:: __version__
+   :canonical: directed_inputs_class.__version__
+   :value: '0.1.0'
+
+   .. autodoc2-docstring:: directed_inputs_class.__version__

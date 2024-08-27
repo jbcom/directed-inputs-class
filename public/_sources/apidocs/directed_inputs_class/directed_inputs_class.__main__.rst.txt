@@ -1,0 +1,58 @@
+:py:mod:`directed_inputs_class.__main__`
+========================================
+
+.. py:module:: directed_inputs_class.__main__
+
+.. autodoc2-docstring:: directed_inputs_class.__main__
+   :allowtitles:
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. list-table::
+   :class: autosummary longtable
+   :align: left
+
+   * - :py:obj:`DirectedInputsClass <directed_inputs_class.__main__.DirectedInputsClass>`
+     - .. autodoc2-docstring:: directed_inputs_class.__main__.DirectedInputsClass
+          :summary:
+
+API
+~~~
+
+.. py:class:: DirectedInputsClass(inputs: typing.Any | None = None, from_environment: bool = True, from_stdin: bool = False)
+   :canonical: directed_inputs_class.__main__.DirectedInputsClass
+
+   .. autodoc2-docstring:: directed_inputs_class.__main__.DirectedInputsClass
+
+   .. rubric:: Initialization
+
+   .. autodoc2-docstring:: directed_inputs_class.__main__.DirectedInputsClass.__init__
+
+   .. py:method:: get_input(k: str, default: typing.Any | None = None, required: bool = False, is_bool: bool = False, is_integer: bool = False) -> typing.Any
+      :canonical: directed_inputs_class.__main__.DirectedInputsClass.get_input
+
+      .. autodoc2-docstring:: directed_inputs_class.__main__.DirectedInputsClass.get_input
+
+   .. py:method:: decode_input(k: str, default: typing.Any | None = None, required: bool = False, decode_from_json: bool = True, decode_from_yaml: bool = False, decode_from_base64: bool = True, allow_none: bool = True) -> typing.Any
+      :canonical: directed_inputs_class.__main__.DirectedInputsClass.decode_input
+
+      .. autodoc2-docstring:: directed_inputs_class.__main__.DirectedInputsClass.decode_input
+
+   .. py:method:: freeze_inputs() -> case_insensitive_dict.CaseInsensitiveDict[str, typing.Any]
+      :canonical: directed_inputs_class.__main__.DirectedInputsClass.freeze_inputs
+
+      .. autodoc2-docstring:: directed_inputs_class.__main__.DirectedInputsClass.freeze_inputs
+
+   .. py:method:: thaw_inputs() -> case_insensitive_dict.CaseInsensitiveDict[str, typing.Any]
+      :canonical: directed_inputs_class.__main__.DirectedInputsClass.thaw_inputs
+
+      .. autodoc2-docstring:: directed_inputs_class.__main__.DirectedInputsClass.thaw_inputs
+
+   .. py:method:: shift_inputs() -> case_insensitive_dict.CaseInsensitiveDict[str, typing.Any]
+      :canonical: directed_inputs_class.__main__.DirectedInputsClass.shift_inputs
+
+      .. autodoc2-docstring:: directed_inputs_class.__main__.DirectedInputsClass.shift_inputs

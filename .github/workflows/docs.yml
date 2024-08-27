@@ -1,0 +1,32 @@
+name: Docs
+
+on:
+  push:
+    branches: [main]
+    pull_request:
+
+permissions:
+  id-token: write
+  contents: write
+  pages: write
+
+jobs:
+  pages:
+    name: Build and Push to Github Pages
+    environment: github-pages
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version-file: .python-version-default
+      - uses: hynek/setup-cached-uv@v2
+      - run: uv pip install --system tox-uv
+      - run: python -Im tox -e docs
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "./docs/_build/html"
