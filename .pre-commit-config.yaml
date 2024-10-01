@@ -35,3 +35,12 @@ repos:
         exclude: docs/_static
       - id: check-toml
       - id: check-yaml
+
+  - repo: local
+    hooks:
+      - id: tox
+        name: Run tox tests
+        entry: tox
+        language: system
+        pass_filenames: false
+        types: [python]
