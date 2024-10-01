@@ -24,7 +24,5 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/) and this 
 
 - handle edge cases where inputs are retrieved already decoded
       - **Scope**: src/directed_inputs_class/__main__.py
-      
+
 ## [0.1.0](https://github.com/jbcom/extended-data-types/tree/0.1.0) - 2024-08-27
-
-
