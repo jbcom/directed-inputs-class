@@ -39,7 +39,7 @@ from directed_inputs_class.__main__ import DirectedInputsClass
 from extended_data_types import base64_encode
 
 
-@pytest.fixture()
+@pytest.fixture
 def _env_setup(monkeypatch):
     """Fixture to set up environment variables.
 
@@ -52,7 +52,7 @@ def _env_setup(monkeypatch):
     monkeypatch.setenv("TEST_ENV_VAR", "test_value")
 
 
-@pytest.fixture()
+@pytest.fixture
 def _stdin_setup(monkeypatch):
     """Fixture to set up stdin.
 
