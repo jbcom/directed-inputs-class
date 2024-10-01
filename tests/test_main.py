@@ -74,7 +74,7 @@ def test_init_with_env_vars():
     inputs from environment variables.
     """
     dic = DirectedInputsClass()
-    assert dic.inputs["TEST_ENV_VAR"] == "test_value"
+    assert dic._inputs["TEST_ENV_VAR"] == "test_value"
 
 
 @pytest.mark.usefixtures("_env_setup")
@@ -91,7 +91,7 @@ def test_init_with_stdin(monkeypatch):
     monkeypatch.setattr("sys.stdin.read", lambda: input_data)
 
     dic = DirectedInputsClass(from_stdin=True)
-    assert dic.inputs["stdin_key"] == "stdin_value"
+    assert dic._inputs["stdin_key"] == "stdin_value"
 
 
 def test_get_input_with_default():
@@ -182,7 +182,7 @@ def test_freeze_inputs():
     dic = DirectedInputsClass(inputs={"key1": "value1"})
     frozen_inputs = dic.freeze_inputs()
     assert frozen_inputs["key1"] == "value1"
-    assert dic.inputs == {}
+    assert dic._inputs == {}
 
 
 def test_thaw_inputs():
@@ -194,8 +194,8 @@ def test_thaw_inputs():
     dic = DirectedInputsClass(inputs={"key1": "value1"})
     dic.freeze_inputs()
     dic.thaw_inputs()
-    assert dic.inputs["key1"] == "value1"
-    assert dic.frozen_inputs == {}
+    assert dic._inputs["key1"] == "value1"
+    assert dic._frozen_inputs == {}
 
 
 def test_shift_inputs():
@@ -206,9 +206,9 @@ def test_shift_inputs():
     """
     dic = DirectedInputsClass(inputs={"key1": "value1"})
     dic.shift_inputs()
-    assert dic.inputs == {}
-    assert dic.frozen_inputs["key1"] == "value1"
+    assert dic._inputs == {}
+    assert dic._frozen_inputs["key1"] == "value1"
 
     dic.shift_inputs()
-    assert dic.inputs["key1"] == "value1"
-    assert dic.frozen_inputs == {}
+    assert dic._inputs["key1"] == "value1"
+    assert dic._frozen_inputs == {}

@@ -55,6 +55,9 @@ class DirectedInputsClass:
             from_environment (bool): Whether to load inputs from environment variables.
             from_stdin (bool): Whether to load inputs from stdin.
         """
+        self._inputs = inputs
+        self.from_environment = from_environment
+        self.from_stdin = from_stdin
         if inputs is None:
             inputs = {}
 
