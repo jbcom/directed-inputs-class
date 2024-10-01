@@ -151,7 +151,7 @@ class DirectedInputsClass:
         """
         conf = self.get_input(k, default=default, required=required)
 
-        if conf is None or conf == default:
+        if conf is None or conf == default or not isinstance(conf, str):
             return conf
 
         if decode_from_base64:
