@@ -115,11 +115,17 @@ lines-between-types = 1
 lines-after-imports = 2
 
 [tool.mypy]
+python_version = "3.12"
+mypy_path = ".mypy_stubs"
+cache_dir = ".mypy_cache"
 strict = true
+show_error_codes = true
+show_column_numbers = true
 pretty = true
+no_incremental = true
 
 [[tool.mypy.overrides]]
-module = "wrapt.*,"
+module = ["wrapt.*", "deepmerge.*"]
 ignore_missing_imports = true
 
 [tool.commitizen]

@@ -17,7 +17,7 @@ from copy import deepcopy
 from typing import Any
 
 from case_insensitive_dict import CaseInsensitiveDict
-from deepmerge import Merger  # type: ignore[import-untyped]
+from deepmerge import Merger
 from extended_data_types import (
     base64_decode,
     decode_json,
